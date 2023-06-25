@@ -17,7 +17,7 @@ export default function Home() {
               <span className="fw-bolder  " style={{ fontSize: "5vw" }}>
                 Online Cloud Storage Services for Everyone
               </span>
-              <div className="w-50 mt-2 ">
+              <div className="w-75 w-md-50 my-2 ">
                 <h6>
                   Our online cloud storage services offer secure and accessible
                   data storage for everyone, with user-friendly features and
@@ -81,7 +81,6 @@ export default function Home() {
                   <BsArrowRightShort className="ms-2" fontSize={"32px"} />{" "}
                 </Link>
               </div>
-              <div className="">ok</div>
             </div>
           </div>
           <div className="col-12 col-md-6 col   ">

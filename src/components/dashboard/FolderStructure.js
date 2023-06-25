@@ -18,7 +18,7 @@ export default function FolderStructure({ content }) {
   }, []);
   return (
     <>
-      <Accordion allowMultiple>
+      <Accordion  allowToggle>
         {content.map((f, i) => (
           <AccordionItem
             key={i}
@@ -29,7 +29,7 @@ export default function FolderStructure({ content }) {
             }}
           >
             <h2>
-              <AccordionButton>
+              <AccordionButton  _expanded={{ bg: 'gray.400', color: 'white' }}>
                 <Box as="span" flex="1" textAlign="left">
                   <div className="d-flex justify-content-between align-items-center">
                     <span className="d-flex gap-2">

@@ -12,53 +12,41 @@ import Image2 from "../../assets/images/Screenshot_2.png";
 import Image3 from "../../assets/images/Screenshot_3.png";
 import Image4 from "../../assets/images/Screenshot_4.png";
 
-import { getAuth,createUserWithEmailAndPassword } from "firebase/auth";
-import {auth} from '../../config/firebase'
+// import { getAuth,createUserWithEmailAndPassword } from "firebase/auth";
+import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
+import { auth } from "../../config/firebase";
 import { useAuth } from "../../context/AuthContext";
-
 
 export default function Signup() {
   const [show, setShow] = useState(false);
   const [state, setstate] = useState({});
 
-  const { setUser} = useAuth()
+  const [createUserWithEmailAndPassword, user, loading, error] =
+    useCreateUserWithEmailAndPassword(auth);
 
-  const navigator = useNavigate()
+  const { setUser } = useAuth();
+
+  const navigator = useNavigate();
 
   const handleClick = () => setShow(!show);
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setstate((s) => ({ ...s, [name]: value }));
+  };
 
+  const handleSignup = async () => {
+    // const auth = getAuth()
+    const { email, password } = state;
 
-  const handleChange = (e)=>{
-    const {name,value} = e.target
-    setstate(s=>({...s,[name]:value}))
-console.log(state)
-
-  }
-
-const handleSignup = async()=>{
-  // const auth = getAuth()
-  const {email,password} = state
-  console.log(email,password)
-  await createUserWithEmailAndPassword(auth, email, password)
-  .then((userCredential) => {
-    // Signed in 
-    const user = userCredential.user;
-    // ...
-    console.log(user)
-    setUser(user)
-    localStorage.setItem('isAuth' , 'true')
-    navigator('/dashboard')
-
-  })
-  .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    console.log(errorMessage)
-  });
-
-
-  }
+    await createUserWithEmailAndPassword(email, password);
+    console.log(user);
+    if (user) {
+      localStorage.setItem("isAuth", "true");
+      setUser(user);
+      navigator("/dashboard");
+    }
+  };
 
   return (
     <>
@@ -69,17 +57,19 @@ const handleSignup = async()=>{
         <div className="container">
           <div className="row ">
             <div className="col-12 col-lg-6 px-0">
-              
               <div className="card p-3 p-sm-4   rounded-5  rounded-bottom-0">
                 <div className=" m-1 ms-sm-2 m-md-5">
                   <div className="text-center">
                     <h4>Signup</h4>
+                    {error && (
+                      <h6 className="text-danger fw-bold">{error.message}</h6>
+                    )}
                   </div>
 
                   <div className="d-flex gap-1">
                     <InputGroup as={"span"} size="md" className="mt-5">
                       <Input
-                      name="firstName"
+                        name="firstName"
                         // w={'50%'}
                         size={{ base: "md", md: "lg" }}
                         pr="4.5rem"
@@ -89,7 +79,7 @@ const handleSignup = async()=>{
                     </InputGroup>
                     <InputGroup as={"span"} size="md" className="mt-5">
                       <Input
-                      name="lastName"
+                        name="lastName"
                         //  w={'50%'}
                         size={{ base: "md", md: "lg" }}
                         pr="4.5rem"
@@ -100,8 +90,8 @@ const handleSignup = async()=>{
                   </div>
                   <InputGroup size="md" className="mt-4">
                     <Input
-                    onChange={handleChange}
-                    name="email"
+                      onChange={handleChange}
+                      name="email"
                       size={{ base: "md", md: "lg" }}
                       pr="4.5rem"
                       type="text"
@@ -110,8 +100,8 @@ const handleSignup = async()=>{
                   </InputGroup>
                   <InputGroup size="md" className="mt-4">
                     <Input
-                    onChange={handleChange}
-                    name="password"
+                      onChange={handleChange}
+                      name="password"
                       size={{ base: "md", md: "lg" }}
                       pr="4.5rem"
                       type={show ? "text" : "password"}
@@ -131,8 +121,8 @@ const handleSignup = async()=>{
                   </InputGroup>
                   <InputGroup size="md" className="mt-4">
                     <Input
-                    onChange={handleChange}
-                    name="confirmPassword"
+                      onChange={handleChange}
+                      name="confirmPassword"
                       size={{ base: "md", md: "lg" }}
                       pr="4.5rem"
                       type={show ? "text" : "password"}
@@ -163,12 +153,17 @@ const handleSignup = async()=>{
                   </Checkbox>
                   <div className="text-end mt-4">
                     <Button
-                    onClick={handleSignup}
+                      disabled={loading}
+                      onClick={handleSignup}
                       className="py-2 py-sm-4  px-3 px-sm-5"
                       variant={"solid"}
                       colorScheme="red"
                     >
-                      Signup
+                      {loading ? (
+                        <div className="spinner-border"></div>
+                      ) : (
+                        "Signup"
+                      )}
                     </Button>
                   </div>
                 </div>

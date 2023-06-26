@@ -10,6 +10,8 @@ import {
   } from "@chakra-ui/react";
   import {  AiOutlineCloudUpload, AiOutlineSearch } from "react-icons/ai";
 import FolderStructure from './FolderStructure';
+import { signOut } from 'firebase/auth';
+import { auth } from '../../config/firebase';
 
 const structure = {
     name:'folder',
@@ -73,7 +75,7 @@ export default function SideContent() {
                             </li>
                             <hr />
                             <li>
-                             <div className="ms-2"><Button>Log out</Button></div>
+                             <div className="ms-2"><Button onClick={()=>{signOut(auth);localStorage.setItem('isAuth','false')}}>Log out</Button></div>
                             </li>
                             
                           </ul>

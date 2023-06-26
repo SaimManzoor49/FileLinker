@@ -2,8 +2,15 @@ import { Avatar, Button, Tooltip } from "@chakra-ui/react";
 import React from "react";
 import { FaRegLightbulb } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import {signOut} from 'firebase/auth'
+import { auth } from "../../config/firebase";
 
 export default function Header() {
+
+  const {user} = useAuth()
+
+
   return (
     <>
       <div className="container-fluid">
@@ -31,7 +38,7 @@ export default function Header() {
                     leftIcon={<FaRegLightbulb />}
                   />
                 </Tooltip>
-                <Link to={'/auth/login'}>
+                {!user.email? <><Link to={'/auth/login'}>
                 <Button
                   px={{ base: "4", sm: "8" }}
                   border={"2px"}
@@ -54,7 +61,16 @@ export default function Header() {
                 >
                   Signup
                 </Button>
-                   </Link>
+                   </Link></>:<><Button
+                   onClick={()=>{signOut(auth);localStorage.setItem('isAuth','false')}}
+                   px={{ base: "4", sm: "8" }}
+                   ml={2}
+                   variant={"solid"}
+                   _hover={{ color: "black", bg: "white" }}
+                   color={"white"}
+                   bg={"black"}
+                   size={{ base: "sm", sm: "md" }}>Logout</Button></>}
+                
               </div>
             </div>
           </div>

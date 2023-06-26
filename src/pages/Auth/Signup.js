@@ -7,14 +7,58 @@ import {
   Text,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Image2 from "../../assets/images/Screenshot_2.png";
 import Image3 from "../../assets/images/Screenshot_3.png";
 import Image4 from "../../assets/images/Screenshot_4.png";
 
+import { getAuth,createUserWithEmailAndPassword } from "firebase/auth";
+import {auth} from '../../config/firebase'
+import { useAuth } from "../../context/AuthContext";
+
+
 export default function Signup() {
   const [show, setShow] = useState(false);
+  const [state, setstate] = useState({});
+
+  const { setUser} = useAuth()
+
+  const navigator = useNavigate()
+
   const handleClick = () => setShow(!show);
+
+
+
+  const handleChange = (e)=>{
+    const {name,value} = e.target
+    setstate(s=>({...s,[name]:value}))
+console.log(state)
+
+  }
+
+const handleSignup = async()=>{
+  // const auth = getAuth()
+  const {email,password} = state
+  console.log(email,password)
+  await createUserWithEmailAndPassword(auth, email, password)
+  .then((userCredential) => {
+    // Signed in 
+    const user = userCredential.user;
+    // ...
+    console.log(user)
+    setUser(user)
+    localStorage.setItem('isAuth' , 'true')
+    navigator('/dashboard')
+
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    console.log(errorMessage)
+  });
+
+
+  }
 
   return (
     <>
@@ -35,6 +79,7 @@ export default function Signup() {
                   <div className="d-flex gap-1">
                     <InputGroup as={"span"} size="md" className="mt-5">
                       <Input
+                      name="firstName"
                         // w={'50%'}
                         size={{ base: "md", md: "lg" }}
                         pr="4.5rem"
@@ -44,6 +89,7 @@ export default function Signup() {
                     </InputGroup>
                     <InputGroup as={"span"} size="md" className="mt-5">
                       <Input
+                      name="lastName"
                         //  w={'50%'}
                         size={{ base: "md", md: "lg" }}
                         pr="4.5rem"
@@ -53,7 +99,9 @@ export default function Signup() {
                     </InputGroup>
                   </div>
                   <InputGroup size="md" className="mt-4">
-                    <InputGroup
+                    <Input
+                    onChange={handleChange}
+                    name="email"
                       size={{ base: "md", md: "lg" }}
                       pr="4.5rem"
                       type="text"
@@ -62,6 +110,8 @@ export default function Signup() {
                   </InputGroup>
                   <InputGroup size="md" className="mt-4">
                     <Input
+                    onChange={handleChange}
+                    name="password"
                       size={{ base: "md", md: "lg" }}
                       pr="4.5rem"
                       type={show ? "text" : "password"}
@@ -81,6 +131,8 @@ export default function Signup() {
                   </InputGroup>
                   <InputGroup size="md" className="mt-4">
                     <Input
+                    onChange={handleChange}
+                    name="confirmPassword"
                       size={{ base: "md", md: "lg" }}
                       pr="4.5rem"
                       type={show ? "text" : "password"}
@@ -111,6 +163,7 @@ export default function Signup() {
                   </Checkbox>
                   <div className="text-end mt-4">
                     <Button
+                    onClick={handleSignup}
                       className="py-2 py-sm-4  px-3 px-sm-5"
                       variant={"solid"}
                       colorScheme="red"

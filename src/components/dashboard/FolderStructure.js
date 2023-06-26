@@ -6,16 +6,12 @@ import {
   AccordionPanel,
   Box,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { AiFillFile, AiFillFolderOpen } from "react-icons/ai";
 
 export default function FolderStructure({ content }) {
   const [view, setView] = useState({});
 
-  useEffect(() => {
-    console.log(content);
-    console.log(view);
-  }, []);
   return (
     <>
       <Accordion  allowToggle>

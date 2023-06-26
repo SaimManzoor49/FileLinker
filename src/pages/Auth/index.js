@@ -1,8 +1,26 @@
 import React from 'react'
-import { Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import Login from './Login'
 import Signup from './Signup'
-export default function index() {
+import { useAuth } from '../../context/AuthContext'
+
+
+export default function Index() {
+
+  
+
+  const {user} = useAuth()
+
+  console.log(user)
+
+
+  if(user.email){
+return <Navigate to={'/'} />
+  }else{
+
+
+
+
   return (
     <>
     <Routes>
@@ -13,4 +31,5 @@ export default function index() {
     
     </>
   )
+}
 }

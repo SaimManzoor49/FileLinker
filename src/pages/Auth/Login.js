@@ -7,12 +7,48 @@ import {
   Text,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import safeImage from '../../assets/images/Screenshot_1.png'
+import { getAuth,signInWithEmailAndPassword } from "firebase/auth";
+import {auth} from '../../config/firebase'
+import { useAuth } from "../../context/AuthContext";
 
 export default function Login() {
   const [show, setShow] = useState(false);
+  const [state, setstate] = useState({});
   const handleClick = () => setShow(!show);
+
+  const {setUser} = useAuth()
+
+const navigator = useNavigate()
+
+  const handleChange = (e)=>{
+    const {name,value} = e.target
+    setstate(s=>({...s,[name]:value}))
+console.log(state)
+  }
+
+  const handleLogin = async()=>{
+    // const auth = getAuth()
+    const {email,password} = state
+    console.log(email,password)
+    await signInWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      // Signed in 
+      const user = userCredential.user;
+      // ...
+      setUser(user)
+      localStorage.setItem('isAuth' , 'true')
+      navigator('/dashboard')
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+    });
+  
+  }
+
+
 
   return (
     <>
@@ -32,6 +68,8 @@ export default function Login() {
 
                 <InputGroup size="md" className="mt-5">
                   <Input
+                  name="email"
+                  onChange={handleChange}
                   size={{base:'md',md:'lg' }}
                     pr="4.5rem"
                     type="text"
@@ -40,6 +78,8 @@ export default function Login() {
                 </InputGroup>
                 <InputGroup size="md" className="mt-4">
                   <Input
+                  name="password"
+                  onChange={handleChange}
                    size={{base:'md',md:'lg' }}
                     pr="4.5rem"
                     type={show ? "text" : "password"}
@@ -61,7 +101,8 @@ export default function Login() {
                    <Checkbox  size={{base:'sm', sm:'md' }} colorScheme="green" defaultChecked>
                     Remember me
                   </Checkbox>
-                  <Button
+                  <Button 
+                  onClick={handleLogin}
                     className="py-2 py-sm-4  px-3 px-sm-5"
                     variant={"solid"}
                     colorScheme="red" 

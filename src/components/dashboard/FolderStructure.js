@@ -7,6 +7,7 @@ import {
   Box,
   Button,
   Input,
+  Tooltip,
 } from "@chakra-ui/react";
 import React, { useRef, useState } from "react";
 import {
@@ -24,11 +25,10 @@ import { storage } from "../../config/firebase";
 
 
 
-export default function FolderStructure({ data, handleInsertNode }) {
+export default function FolderStructure({ data, handleInsertNode,handleInsertFile }) {
 
-  // const [data, setdata] = useState(data);
   const [view, setView] = useState([]);
-  // const [selectedFile, setSelectedFile] = useState();
+  const [gotURI,setGotURI] = useState(false)
   const [showInput, setShowInput] = useState({
     visible: false,
     type: null,
@@ -40,6 +40,12 @@ export default function FolderStructure({ data, handleInsertNode }) {
   const storageRef = ref(storage);
 
 
+
+
+  const handlePropagation =(e)=>{
+    e.stopPropagation();
+
+  }
 
 
 
@@ -60,7 +66,6 @@ export default function FolderStructure({ data, handleInsertNode }) {
 
   const handleAddDirectory = (e) => {
     if (e.keyCode === 13 && e.target.value) {
-      console.log(data.id)
       handleInsertNode(data.id, e.target.value, showInput.type);
 
       setShowInput({ ...showInput, visible: false });
@@ -76,7 +81,8 @@ export default function FolderStructure({ data, handleInsertNode }) {
 
   const handleButtonClick = (e) => {
     e.stopPropagation()
-    // Trigger the input element's click event
+
+
     fileInputRef.current.click();
   };
 
@@ -89,23 +95,26 @@ export default function FolderStructure({ data, handleInsertNode }) {
 
     if (selectedFile) {
 
-      // selectedFile.name=selectedFile.name.split('.')[0]+ Math.random().toString().slice(2) +"."+ selectedFile.name.split('.')[1]
-      const fileRef = ref(storageRef, selectedFile.name.split('.')[0]+ Math.random().toString().slice(2) +"."+ selectedFile.name.split('.')[1]);
-
-      const result = await uploadFile(fileRef, selectedFile, {
-        contentType: selectedFile.type
+       
+      const modifiedName = selectedFile.name.split('.')[0] +'|'+ Math.random().toString().slice(2) + "." + selectedFile.name.split('.')[1];
+      const modifiedFile = new File([selectedFile], modifiedName, { type: selectedFile.type });
+      
+      
+      
+      const fileRef = ref(storageRef, modifiedFile.name.split('.')[0]+'|'+ Math.random().toString().slice(2) +"."+ modifiedFile.name.split('.')[1]);
+      
+      const result = await uploadFile(fileRef, modifiedFile, {
+        contentType: modifiedFile.type
       });
       console.log(`Result: ` + result);
       const downloadURL = await getDownloadURL(result.ref);
       console.log(downloadURL)
-    }
+      let ext = '.'+modifiedFile.type.split('/')[1]
+      handleInsertFile(data.id,modifiedFile.name.split('|')[0],'file',downloadURL,ext)
 
-    
-    
-    
-    
-    // Do something with the selected file
-    console.log('Selected file:', selectedFile);
+
+
+    }
 
 
     fileInputRef.current.value=""
@@ -113,20 +122,74 @@ export default function FolderStructure({ data, handleInsertNode }) {
   };
 
 
+
+  const copyURL =()=>{
+    let copyURI =data.downloadURI 
+        // Create a temporary textarea element
+        const textarea = document.createElement('textarea');
+        textarea.value = copyURI;
+    
+        // Append the textarea to the document
+        document.body.appendChild(textarea);
+    
+        // Select the text inside the textarea
+        textarea.select();
+    
+        // Execute the copy command
+        document.execCommand('copy');
+    
+        // Remove the temporary textarea from the document
+        document.body.removeChild(textarea);
+    
+        // Optionally, show a success message or perform other actions
+
+        setGotURI(true)
+  }
+
+  const handleDownload = async(e)=>{
+    e.stopPropagation()
+    
+
+
+//     const xhr = new XMLHttpRequest();
+//     xhr.responseType = 'blob';
+//     xhr.onload = (event) => {
+//       const blob = xhr.response;
+//     };
+//     let url = 
+//     // "https://firebasestorage.googleapis.com/v0/b/filelinkerltd.appspot.com/o/checking%7C9261499749584714%7C30354176522817644.txt?alt=media&token=435d816d-2a0d-440c-85bd-0a481c856b9c"
+//     "https://firebasestorage.googleapis.com/v0/b/filelinkerltd.appspot.com/o/IMG-20230628-WA0009-removebg-preview%7C8322919052158815%7C06395997959824395.png?alt=media&token=60297e82-5e50-466b-8da3-481400941551"
+//     xhr.open('GET', url);
+//     xhr.send();
+// console.log(url,"<-downloaded")
+console.log(data)
+const xhr = new XMLHttpRequest();
+xhr.responseType = 'blob';
+xhr.onload = (event) => {
+  const blob = xhr.response;
+  // Create a temporary download link
+  const downloadLink = document.createElement('a');
+  downloadLink.href = URL.createObjectURL(blob);
+  downloadLink.download = data.name+data.extension; // Specify the desired file name here
+  downloadLink.click();
+};
+let url = 
+// "https://firebasestorage.googleapis.com/v0/b/filelinkerltd.appspot.com/o/IMG-20230628-WA0009-removebg-preview%7C8322919052158815%7C06395997959824395.png?alt=media&token=60297e82-5e50-466b-8da3-481400941551";
+data.downloadURI
+xhr.open('GET', url);
+xhr.send();
+console.log(url, "<-downloaded");   
+  }
+
+
   return (
     <>
       <Accordion allowToggle>
-        {/* {data.content?.map((f, i) => ( */}
         <AccordionItem
-          // key={i}
-          onClick={() => {
-            data.type === "folder" && data.content?.length
-              ? setView(data.content)
-              : setView([]);
-          }}
+       
         >
           <h2>
-            <AccordionButton _expanded={{ bg: "gray.400", color: "white" }}>
+            <AccordionButton _expanded={{ bg: "gray.400", color: "white" }}   onClick={(e)=>{ data.type==='file' && handlePropagation(e)}} >
               <Box as="span" flex="1" textAlign="left">
                 <div className="d-flex justify-content-between align-items-center">
                   <span className="d-flex gap-2">
@@ -136,12 +199,31 @@ export default function FolderStructure({ data, handleInsertNode }) {
                     ) : (
                       <AiFillFile />
                     )}
-                    <h6>{data.name}</h6>
+                    <h6>{data.name.length>12?<>
+                      <Tooltip as={'span'} label={data.name} aria-label='A tooltip'>
+
+                      {
+                        data.name.slice(0,12)+'...'
+                        
+                      }
+                      </Tooltip>
+                    </>
+                      :data.name}
+                      </h6>
                   </span>
                   {/* {f.type !== "folder" && <small>size: {f.size} bytes</small>} */}
                   {/* <small>{f.type}</small> */}
 
-                  <small>{data.date}</small>
+                  <small>
+                      {data.type==='file'&&
+                      <span className="me-1">
+                      <Button as={'span'} size={'sm'} colorScheme="yellow" onClick={copyURL} >{!gotURI?"Share file":'Got u 😁'}</Button>
+                      <Button as={'span'} size={'sm'}  ms={'1px'} colorScheme="green" onClick={(e)=>{handleDownload(e)}} >Download</Button>
+                      </span>
+                      }  
+
+                    {data.date}
+                    </small>
 
                       {data.type==='folder'&&
                   <div className="">
@@ -155,11 +237,7 @@ export default function FolderStructure({ data, handleInsertNode }) {
                     >
                       Folder
                     </Button>
-                    {/* <Input as={'span'} w={'10%'} type="file"
-                    onClick={(e) => {
-                      handleDirectory(e, "file");
-                    }}
-                    /> */}
+                    
                     <Button
                     
                       as={"span"}
@@ -203,16 +281,15 @@ export default function FolderStructure({ data, handleInsertNode }) {
             </div>
           )}
           <AccordionPanel pb={4}>
-            {view[0]?.name &&
-              view.map((f, i) => (
+            {
+              data.content.map((f, i) => (
                 <div className="ms-1 " key={i}>
-                  <FolderStructure data={f} handleInsertNode={handleInsertNode} />
+                  
+                  <FolderStructure data={f}  handleInsertNode={handleInsertNode} handleInsertFile={handleInsertFile}/>
                 </div>
               ))}
           </AccordionPanel>
         </AccordionItem>
-        {/* // ) */}
-        {/* )} */}
       </Accordion>
     </>
   );

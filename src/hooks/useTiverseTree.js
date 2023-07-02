@@ -1,36 +1,43 @@
-
-import dayjs from "dayjs"
-import { v4 } from "uuid"
+import dayjs from "dayjs";
+import { v4 } from "uuid";
 export default function useTiverseTree() {
-
-
-const  insertNode=(tree,folderId,item,isFolder)=>{
-    if(tree.id===folderId && tree.type==='folder'){
+  const insertNode = (tree, folderId, item, isFolder) => {
+    if (tree.id === folderId && tree.type === "folder") {
       tree.content.unshift({
-         id:v4(),
-         name:item,
-         type:isFolder,
-         date: dayjs().format("DD-MM-YYYY"),
-         content:[]
-     })
+        id: v4(),
+        name: item,
+        type: isFolder,
+        date: dayjs().format("DD-MM-YYYY"),
+        content: [],
+      });
+    } else {
+      let node = [];
+      node = tree.content.map((n) => insertNode(n, folderId, item, isFolder));
     }
-    else{
 
-   let node = []
-   console.log(tree)
-   node = tree.content.map((n)=>(insertNode(n,folderId,item,isFolder)))
-   console.log(node)
- }
-//  return tree
+    return tree;
+  };
 
 
+  const addFile = (tree, folderId, item, isFolder,URI,ext) => {
+    if (tree.id === folderId && tree.type === "folder") {
+tree.content.unshift({
+        id: v4(),
+        name: item,
+        type: isFolder,
+        date: dayjs().format("DD-MM-YYYY"),
+        downloadURI:URI,
+        extension:ext,
+        content: [],
+      });
+    } else {
+      let node = [];
+      node = tree.content.map((n) => addFile(n, folderId, item, isFolder,URI));
+    }
+    //  return tree
 
-  console.log(tree)
-  return tree
+    return tree;
+  };
 
-}
-
-  return (
-    {insertNode}
-  )
+  return { insertNode,addFile };
 }

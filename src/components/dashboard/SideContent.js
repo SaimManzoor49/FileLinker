@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Avatar,
   Box,
@@ -61,7 +61,7 @@ export default function SideContent() {
   const [getFolderName, setGetFolderName] = useState(false);
   const [folder, setFolder] = useState(initialFolder);
 
-  const { insertNode } = useTiverseTree();
+  const { insertNode,addFile } = useTiverseTree();
 
   const navigator = useNavigate();
 
@@ -75,7 +75,6 @@ export default function SideContent() {
 
   const handleFolderName = (e) => {
     setFolder((s) => ({ ...s, name: e.target.value, date: dayjs().format("DD-MM-YYYY") }));
-    // setFolder((s) => ({ ...s, }));
   };
   const handleCreateFolder = (e) => {
     setData((s) => [...s, folder]);
@@ -86,10 +85,16 @@ export default function SideContent() {
   //////////////////////////////
 
   const handleInsertNode = (folderId, item, isFolder) => {
-    // let newData = { ...data,content: [...insertNode(data, folderId, item, isFolder)]};
     let newData = insertNode(data, folderId, item, isFolder);
     setData(newData);
   };
+  const handleInsertFile = (folderId, item, isFolder,URI,ext) => {
+    let newData = addFile(data, folderId, item, isFolder,URI,ext);
+    setData({...data,content:[...newData.content]});
+  };
+  
+  
+
 
   return (
     <>
@@ -207,9 +212,7 @@ export default function SideContent() {
         </Box>
       </Box>
       <hr />
-      {/* {data.map((d, i) => ( */}
-        <FolderStructure  data={data} handleInsertNode={handleInsertNode} />
-      {/* ))} */}
+        <FolderStructure key={'12'}  data={data}  handleInsertNode={handleInsertNode} handleInsertFile={handleInsertFile}/>
     </>
   );
 }

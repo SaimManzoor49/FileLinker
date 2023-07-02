@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Avatar,
   Box,
@@ -8,28 +8,34 @@ import {
   InputGroup,
   InputLeftElement,
 } from "@chakra-ui/react";
-import { AiOutlineCloudUpload, AiOutlineFolderAdd, AiOutlineSearch, AiOutlineSmile } from "react-icons/ai";
+import {
+  AiOutlineCloudUpload,
+  AiOutlineFolderAdd,
+  AiOutlineSearch,
+  AiOutlineSmile,
+} from "react-icons/ai";
 import FolderStructure from "./FolderStructure";
 import { signOut } from "firebase/auth";
 import { auth } from "../../config/firebase";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
+import { v4 } from "uuid";
 
-import { FilePicker } from "react-file-picker";
 import useTiverseTree from "../../hooks/useTiverseTree";
 
 const structure = {
-  id:new Date().getTime(),
+  id: v4(),
   name: "folder",
   size: "1283913",
   type: "folder",
   date: "23 oct ",
+  content:[]
 };
 
 const initialData = 
- [ {
-    id:new Date().getTime(),
-    name: "folder",
+  {
+    id: v4(),
+    name: "Root",
     type: "folder",
     date: "20 oct ",
     content: [
@@ -40,28 +46,22 @@ const initialData =
         content: [{ ...structure, type: "file", name: "filee" }],
       },
     ],
-  }]
-
+  }
 
 
 const initialFolder = {
-  name:'NewFolder',
-  type:"folder",
-  date:'00'
-
-}
+  name: "NewFolder",
+  type: "folder",
+  date: "00-00-00",
+};
 
 export default function SideContent() {
   const [data, setData] = useState(initialData);
-  const [dataToRender, setDataToRender] = useState(data);
   const [file, setFile] = useState({});
   const [getFolderName, setGetFolderName] = useState(false);
   const [folder, setFolder] = useState(initialFolder);
-  const [count, setCount] = useState(23);
 
-  const {insertNode} = useTiverseTree()
-
-
+  const { insertNode } = useTiverseTree();
 
   const navigator = useNavigate();
 
@@ -69,47 +69,27 @@ export default function SideContent() {
     console.log(file);
   };
 
-  const handleGetFolderName = ()=>{
-    setGetFolderName(!getFolderName)
-
-  }
-
-
-
-  const handleFolderName = (e) => {
-    setFolder((s)=>({...s,name:e.target.value}))
-    setFolder((s)=>({...s,date:dayjs().format('DD-MM-YYYY')}))
-    console.log(folder)
-    
-  }
-  const handleCreateFolder = (e) => {
-    
-    
-setData((s)=>([...s,folder]))
-console.log(data)
-
-    
-    setGetFolderName(false)
+  const handleGetFolderName = () => {
+    setGetFolderName(!getFolderName);
   };
 
-//////////////////////////////
-let newData = data;
-const handleInsertNode = (folderId,item,isFolder)=>{
-  console.log(data)
-   newData = insertNode(data,folderId,item,isFolder)
-  console.log(newData)
-}
+  const handleFolderName = (e) => {
+    setFolder((s) => ({ ...s, name: e.target.value, date: dayjs().format("DD-MM-YYYY") }));
+    // setFolder((s) => ({ ...s, }));
+  };
+  const handleCreateFolder = (e) => {
+    setData((s) => [...s, folder]);
 
+    setGetFolderName(false);
+  };
 
+  //////////////////////////////
 
-useEffect(()=>{
-  
-  setData(newData)
-
-  setDataToRender(()=>(newData.map((d)=>(d))))
-
-},[newData])
-
+  const handleInsertNode = (folderId, item, isFolder) => {
+    // let newData = { ...data,content: [...insertNode(data, folderId, item, isFolder)]};
+    let newData = insertNode(data, folderId, item, isFolder);
+    setData(newData);
+  };
 
   return (
     <>
@@ -192,26 +172,44 @@ useEffect(()=>{
               Upload
             </Button>
           </div>
-
         </div>
         <Box className="d-flex gap-2 justify-content-start align-items-center">
-
-            <Button size={'sm'} px={'30px'} mt={'5px'} onClick={handleGetFolderName} leftIcon={<AiOutlineFolderAdd size={"25px"} />}>Create Folder</Button>
-            {getFolderName && <Input w={'250px'} size={'sm'} mt={'6px'} type="text" placeholder="Enter folder name first!!" onChange={handleFolderName} />}
-            {getFolderName &&<Button size={'sm'} px={'30px'} mt={'5px'} onClick={handleCreateFolder} leftIcon={<AiOutlineSmile size={"25px"} />}>Here we go</Button>}
+          <Button
+            size={"sm"}
+            px={"30px"}
+            mt={"5px"}
+            onClick={handleGetFolderName}
+            leftIcon={<AiOutlineFolderAdd size={"25px"} />}
+          >
+            Create Folder
+          </Button>
+          {getFolderName && (
+            <Input
+              w={"250px"}
+              size={"sm"}
+              mt={"6px"}
+              type="text"
+              placeholder="Enter folder name first!!"
+              onChange={handleFolderName}
+            />
+          )}
+          {getFolderName && (
+            <Button
+              size={"sm"}
+              px={"30px"}
+              mt={"5px"}
+              onClick={handleCreateFolder}
+              leftIcon={<AiOutlineSmile size={"25px"} />}
+            >
+              Here we go
+            </Button>
+          )}
         </Box>
       </Box>
       <hr />
-      {dataToRender.map((d,i)=>{
-        console.log(d)
-
-        ////////////////
-        // setCount(count+1)
-
-        return <FolderStructure key={i+count} data={d} handleInsertNode={()=>{handleInsertNode()}} />
-
-        
-      })}
+      {/* {data.map((d, i) => ( */}
+        <FolderStructure  data={data} handleInsertNode={handleInsertNode} />
+      {/* ))} */}
     </>
   );
 }

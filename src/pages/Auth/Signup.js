@@ -14,8 +14,11 @@ import Image4 from "../../assets/images/Screenshot_4.png";
 
 // import { getAuth,createUserWithEmailAndPassword } from "firebase/auth";
 import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
-import { auth } from "../../config/firebase";
+import { auth, db } from "../../config/firebase";
 import { useAuth } from "../../context/AuthContext";
+import { doc, setDoc } from "firebase/firestore";
+import dayjs from "dayjs";
+import { v4 } from "uuid";
 
 export default function Signup() {
   const [show, setShow] = useState(false);
@@ -40,6 +43,7 @@ export default function Signup() {
     const { email, password } = state;
 
     await createUserWithEmailAndPassword(email, password);
+    await handleUesrDoc()
     console.log(user);
     if (user) {
       localStorage.setItem("isAuth", "true");
@@ -47,6 +51,21 @@ export default function Signup() {
       navigator("/dashboard");
     }
   };
+
+
+  const handleUesrDoc = async()=>{
+    await setDoc(doc(db, "users",state.email), {
+      ...state,createdAt: serverTimestamp(),root:{
+        id:v4(),
+        name:'Root',
+        type:'folder',
+        date:dayjs().format("DD-MM-YYYY"),
+        content:[]
+
+      }
+    });
+
+  }
 
   return (
     <>
@@ -70,6 +89,7 @@ export default function Signup() {
                     <InputGroup as={"span"} size="md" className="mt-5">
                       <Input
                         name="firstName"
+                        onChange={handleChange}
                         // w={'50%'}
                         size={{ base: "md", md: "lg" }}
                         pr="4.5rem"
@@ -80,6 +100,7 @@ export default function Signup() {
                     <InputGroup as={"span"} size="md" className="mt-5">
                       <Input
                         name="lastName"
+                        onChange={handleChange}
                         //  w={'50%'}
                         size={{ base: "md", md: "lg" }}
                         pr="4.5rem"

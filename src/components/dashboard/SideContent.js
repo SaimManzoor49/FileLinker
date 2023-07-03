@@ -16,12 +16,14 @@ import {
 } from "react-icons/ai";
 import FolderStructure from "./FolderStructure";
 import { signOut } from "firebase/auth";
-import { auth } from "../../config/firebase";
+import { auth, db } from "../../config/firebase";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import { v4 } from "uuid";
+import { doc, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
 
 import useTiverseTree from "../../hooks/useTiverseTree";
+import { useAuth } from "../../context/AuthContext";
 
 const structure = {
   id: v4(),
@@ -56,7 +58,7 @@ const initialFolder = {
 };
 
 export default function SideContent() {
-  const [data, setData] = useState(initialData);
+  const [data, setData] = useState({content:[]});
   const [file, setFile] = useState({});
   const [getFolderName, setGetFolderName] = useState(false);
   const [folder, setFolder] = useState(initialFolder);
@@ -65,9 +67,33 @@ export default function SideContent() {
 
   const navigator = useNavigate();
 
-  const handleFileUpload = () => {
-    console.log(file);
+  const {user,userData,setUserData} = useAuth()
+  
+  
+ useEffect(()=>{
+setData(userData.root)
+// console.log(data)
+  
+
+
+},[userData])
+
+
+
+
+  const handleFileUpload = async(updatedData) => {
+    // console.log(file);
+    const washingtonRef = doc(db, "users", user.email);
+
+// Set the "capital" field of the city 'DC'
+console.log(updatedData)
+
+const temp = 
+await setDoc(washingtonRef,{...userData, updatedAt: serverTimestamp(),root:data});
   };
+
+
+
 
   const handleGetFolderName = () => {
     setGetFolderName(!getFolderName);
@@ -87,10 +113,16 @@ export default function SideContent() {
   const handleInsertNode = (folderId, item, isFolder) => {
     let newData = insertNode(data, folderId, item, isFolder);
     setData(newData);
+    setUserData({...userData,root:newData})
+    handleFileUpload({...userData,root:newData})
+
   };
   const handleInsertFile = (folderId, item, isFolder,URI,ext) => {
     let newData = addFile(data, folderId, item, isFolder,URI,ext);
     setData({...data,content:[...newData.content]});
+    const temp =  {...data,content:[...newData.content]}
+    setUserData({...userData, root:temp})
+    handleFileUpload({...userData, root:temp})
   };
   
   
@@ -212,7 +244,8 @@ export default function SideContent() {
         </Box>
       </Box>
       <hr />
-        <FolderStructure key={'12'}  data={data}  handleInsertNode={handleInsertNode} handleInsertFile={handleInsertFile}/>
+
+      {data?.name && <FolderStructure key={'12'}  data={data}  handleInsertNode={handleInsertNode} handleInsertFile={handleInsertFile}/> }  
     </>
   );
 }

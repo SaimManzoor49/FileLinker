@@ -9,6 +9,7 @@ export default function useTiverseTree() {
         type: isFolder,
         date: dayjs().format("DD-MM-YYYY"),
         content: [],
+        extension:'folder'
       });
     } else {
       let node = [];
@@ -32,7 +33,7 @@ tree.content.unshift({
       });
     } else {
       let node = [];
-      node = tree.content.map((n) => addFile(n, folderId, item, isFolder,URI));
+      node = tree.content.map((n) => addFile(n, folderId, item, isFolder,URI,ext));
     }
     //  return tree
 

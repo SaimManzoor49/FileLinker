@@ -106,10 +106,11 @@ export default function FolderStructure({ data, handleInsertNode,handleInsertFil
       const result = await uploadFile(fileRef, modifiedFile, {
         contentType: modifiedFile.type
       });
-      console.log(`Result: ` + result);
+      console.log(`Uploaded`  );
       const downloadURL = await getDownloadURL(result.ref);
-      console.log(downloadURL)
+      // console.log(downloadURL)
       let ext = '.'+modifiedFile.type.split('/')[1]
+      console.log(ext)
       handleInsertFile(data.id,modifiedFile.name.split('|')[0],'file',downloadURL,ext)
 
 
@@ -199,7 +200,7 @@ console.log(url, "<-downloaded");
                     ) : (
                       <AiFillFile />
                     )}
-                    <h6>{data.name.length>12?<>
+                    <h6>{data?.name?.length>12?<>
                       <Tooltip as={'span'} label={data.name} aria-label='A tooltip'>
 
                       {

@@ -9,7 +9,7 @@ export default function useTiverseTree() {
         type: isFolder,
         date: dayjs().format("DD-MM-YYYY"),
         content: [],
-        extension:'folder'
+        extension: "folder",
       });
     } else {
       let node = [];
@@ -19,26 +19,39 @@ export default function useTiverseTree() {
     return tree;
   };
 
-
-  const addFile = (tree, folderId, item, isFolder,URI,ext) => {
+  const addFile = (tree, folderId, item, isFolder, URI, ext) => {
     if (tree.id === folderId && tree.type === "folder") {
-tree.content.unshift({
+      tree.content.unshift({
         id: v4(),
         name: item,
         type: isFolder,
         date: dayjs().format("DD-MM-YYYY"),
-        downloadURI:URI,
-        extension:ext,
+        downloadURI: URI,
+        extension: ext,
         content: [],
       });
     } else {
       let node = [];
-      node = tree.content.map((n) => addFile(n, folderId, item, isFolder,URI,ext));
+      node = tree.content.map((n) =>
+        addFile(n, folderId, item, isFolder, URI, ext)
+      );
     }
-    //  return tree
 
     return tree;
   };
 
-  return { insertNode,addFile };
+  const deleteFile = (tree, folderId ,prev) => {
+    if (tree.id === folderId) {
+      prev.content = prev.content.filter((c) => {
+        return c.id !== folderId;
+      });
+
+    } else {
+      let node = [];
+      node = tree.content.map((n) => deleteFile(n, folderId,tree));
+    }
+    return tree;
+  };
+
+  return { insertNode, addFile, deleteFile };
 }

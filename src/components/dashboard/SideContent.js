@@ -63,7 +63,7 @@ export default function SideContent() {
   const [getFolderName, setGetFolderName] = useState(false);
   const [folder, setFolder] = useState(initialFolder);
 
-  const { insertNode,addFile } = useTiverseTree();
+  const { insertNode,addFile,deleteFile } = useTiverseTree();
 
   const navigator = useNavigate();
 
@@ -119,6 +119,14 @@ await setDoc(washingtonRef,{...userData, updatedAt: serverTimestamp(),root:data}
   };
   const handleInsertFile = (folderId, item, isFolder,URI,ext) => {
     let newData = addFile(data, folderId, item, isFolder,URI,ext);
+    setData({...data,content:[...newData.content]});
+    const temp =  {...data,content:[...newData.content]}
+    setUserData({...userData, root:temp})
+    handleFileUpload({...userData, root:temp})
+  };
+  
+  const handleDeleteFile = (folderId) => {
+    let newData = deleteFile(data, folderId);
     setData({...data,content:[...newData.content]});
     const temp =  {...data,content:[...newData.content]}
     setUserData({...userData, root:temp})
@@ -188,7 +196,7 @@ await setDoc(washingtonRef,{...userData, updatedAt: serverTimestamp(),root:data}
           </div>
         </div>
       </Box>
-      <Box>
+      {/* <Box>
         <div className="d-flex justify-content-between align-items-center mt-2 px-2">
           <p className="mb-0">Drive</p>
 
@@ -242,10 +250,12 @@ await setDoc(washingtonRef,{...userData, updatedAt: serverTimestamp(),root:data}
             </Button>
           )}
         </Box>
-      </Box>
+      </Box> */}
+
+      <h6 className="fw-bold mt-4">Drive</h6>
       <hr />
 
-      {data?.name && <FolderStructure key={'12'}  data={data}  handleInsertNode={handleInsertNode} handleInsertFile={handleInsertFile}/> }  
+      {data?.name && <FolderStructure key={'12'}  data={data}   handleDeleteFile={handleDeleteFile}  handleInsertNode={handleInsertNode} handleInsertFile={handleInsertFile}/> }  
     </>
   );
 }

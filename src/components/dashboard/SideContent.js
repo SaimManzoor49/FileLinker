@@ -62,6 +62,8 @@ export default function SideContent() {
   const [file, setFile] = useState({});
   const [getFolderName, setGetFolderName] = useState(false);
   const [folder, setFolder] = useState(initialFolder);
+  const [search, setSearch] = useState('');
+
 
   const { insertNode,addFile,deleteFile } = useTiverseTree();
 
@@ -132,9 +134,18 @@ await setDoc(washingtonRef,{...userData, updatedAt: serverTimestamp(),root:data}
     setUserData({...userData, root:temp})
     handleFileUpload({...userData, root:temp})
   };
-  
-  
 
+
+  const handleSearch =(e)=>{
+
+    setSearch(e.target.value)
+
+
+
+
+  }
+  
+  
 
   return (
     <>
@@ -148,6 +159,7 @@ await setDoc(washingtonRef,{...userData, updatedAt: serverTimestamp(),root:data}
               rounded={"full"}
               bg={"gray.100"}
               type="text"
+              onChange={handleSearch}
               placeholder="Search"
             />
           </InputGroup>
@@ -158,8 +170,12 @@ await setDoc(washingtonRef,{...userData, updatedAt: serverTimestamp(),root:data}
                 type="button"
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
-                name="S"
-                src="https://avatars.githubusercontent.com/u/118682379?v=4"
+                name={userData?.firstName+userData?.lastName}
+                // textColor={''}
+                fontWeight={'bold'}
+                bg={'red'}
+                src={userData?.pic}
+                alt={userData?.firstName}
               />
               <ul className="dropdown-menu " style={{ width: "260px" }}>
                 <li>
@@ -168,12 +184,12 @@ await setDoc(washingtonRef,{...userData, updatedAt: serverTimestamp(),root:data}
                       rounded={"2xl"}
                       boxSize={"52px"}
                       objectFit="cover"
-                      src="https://bit.ly/dan-abramov"
-                      alt="Dan Abramov"
+                      src={userData?.pic}
+                      alt={userData?.firstName}
                     />
                     <div className="mt-4">
-                      <h6 className="fw-bold mb-0">Saim</h6>
-                      <small className="mb-0">saummanzoor49@gmail.com</small>
+                      <h6 className="fw-bold mb-0">{userData?.firstName}</h6>
+                      <small className="mb-0">{userData?.email}</small>
                     </div>
                   </div>
                 </li>

@@ -1,6 +1,8 @@
 import {
   Button,
   Checkbox,
+  FormControl,
+  FormLabel,
   Input,
   InputGroup,
   InputRightElement,
@@ -16,13 +18,30 @@ import Image4 from "../../assets/images/Screenshot_4.png";
 import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { auth, db } from "../../config/firebase";
 import { useAuth } from "../../context/AuthContext";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import dayjs from "dayjs";
 import { v4 } from "uuid";
+import { useToast } from '@chakra-ui/react'
+import axios from "axios";
+
+
+const initialState = {
+  firstName:'',
+  lastName:'',
+  email:'',
+  password:'',
+  confirmPassword:'',
+  pic:''
+}
+
 
 export default function Signup() {
   const [show, setShow] = useState(false);
-  const [state, setstate] = useState({});
+  const [state, setstate] = useState(initialState);
+  const [checked, setChecked] = useState(false);
+  const [pic, setPic] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
 
   const [createUserWithEmailAndPassword, user, loading, error] =
     useCreateUserWithEmailAndPassword(auth);
@@ -30,6 +49,8 @@ export default function Signup() {
   const { setUser } = useAuth();
 
   const navigator = useNavigate();
+
+  const toast = useToast()
 
   const handleClick = () => setShow(!show);
 
@@ -40,8 +61,47 @@ export default function Signup() {
 
   const handleSignup = async () => {
     // const auth = getAuth()
-    const { email, password } = state;
 
+    
+    const {firstName, email, password,confirmPassword } = state;
+    if(
+      firstName.length<3&&
+      email.length<3&&
+      password.length<3&&
+      confirmPassword.length<3
+    ){
+      toast({
+        title: `Enter fields correctly`,
+        status: 'warning',
+        duration: 6000,
+        isClosable: true,
+      })
+      return
+
+    }
+
+
+    
+    if(password!==confirmPassword){
+      toast({
+        title: `Password dosen't match`,
+        status: 'warning',
+        duration: 6000,
+        isClosable: true,
+      })
+      return 
+    }
+
+
+    if(!checked){
+      toast({
+        title: `Check i agree to terms and condition`,
+        status: 'warning',
+        duration: 6000,
+        isClosable: true,
+      })
+      return
+    }
     await createUserWithEmailAndPassword(email, password);
     await handleUesrDoc()
     console.log(user);
@@ -66,6 +126,53 @@ export default function Signup() {
     });
 
   }
+
+
+
+
+  const uploadImage = async () => {
+    console.log(pic)
+    if (!pic) {
+      console.log('whot')
+
+      toast({
+        title: "Please select an Image",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      return;
+    }
+
+    if (pic.type === "image/*" || pic.type === "image/png"||pic.type === "image/jpeg") {
+      const data = new FormData();
+      data.append("file", pic);
+      data.append("upload_preset", "chitChat");
+      data.append("cloud_name", "dukjlbovc");
+      await axios
+        .post(process.env.REACT_APP_CLOUD_URI, data)
+        .then((res) => {
+        console.log(res.data.url)
+        setstate((s) => ({ ...s, pic: res.data.url.toString() }));
+        console.log(state.pic)
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      toast({
+        title: "Please select an Image",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      return;
+    }
+  };
+
+
 
   return (
     <>
@@ -161,8 +268,33 @@ export default function Signup() {
                       </Button>
                     </InputRightElement>
                   </InputGroup>
+                  <FormControl id="pic" colorScheme="gray" mt={'8px'}>
+          <FormLabel>Upload Your Pic!!!</FormLabel>
+          <InputGroup>
+            <Input
+              colorScheme="gray"
+              type="file"
+              accept="image/*"
+              p={1.5}
+              onChange={(e) => {
+                setPic(e.target.files[0]);
+              }}
+            />
+          </InputGroup>
+        </FormControl>
+        <Button
+          colorScheme={state.pic?'green':'gray'}
+          width={"100%"}
+          m={"15px 0 0 0"}
+          onClick={uploadImage}
+          isLoading={isLoading}
+        >
+            {state.pic?'Got Your Image 😮':'Upload Image (Recomanded)'}
+          
+        </Button>
 
                   <Checkbox
+                  onChange={()=>{setChecked(!checked)}}
                     size={{ base: "sm", sm: "md" }}
                     mt={"14px"}
                     colorScheme="red"

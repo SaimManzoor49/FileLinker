@@ -25,7 +25,7 @@ export default function Header() {
                 />
               </Link>
               <div className="">
-                <Tooltip
+                {/* <Tooltip
                   hasArrow
                   label="Switch to Dark Mode"
                   bg="blackAlpha.900"
@@ -37,7 +37,7 @@ export default function Header() {
                     size={{ base: "sm", sm: "md" }}
                     leftIcon={<FaRegLightbulb />}
                   />
-                </Tooltip>
+                </Tooltip> */}
                 {!user.email? <><Link to={'/auth/login'}>
                 <Button
                   px={{ base: "4", sm: "8" }}
@@ -61,13 +61,26 @@ export default function Header() {
                 >
                   Signup
                 </Button>
-                   </Link></>:<><Button
+                   </Link></>:<>
+                   <Link to={'/dashboard'}>
+                   <Button
+                   px={{ base: "4", sm: "8" }}
+                   ml={2}
+                   border={"2px"}
+                   _hover={{ color: "white", bg: "black" }}
+                   variant={"ghost"}
+                   size={{ base: "sm", sm: "md" }}
+                   >Dashboard</Button>
+                   </Link>
+                   <Button
                    onClick={()=>{signOut(auth);localStorage.setItem('isAuth','false')}}
                    px={{ base: "4", sm: "8" }}
                    ml={2}
                    variant={"solid"}
                    _hover={{ color: "black", bg: "white" }}
+                   outline={'9px'}
                    color={"white"}
+                   style={{outline:'10px',outlineColor:'red',}}
                    bg={"black"}
                    size={{ base: "sm", sm: "md" }}>Logout</Button></>}
                 

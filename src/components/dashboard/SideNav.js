@@ -7,6 +7,7 @@ import {
   Box,
   Button,
 } from "@chakra-ui/react";
+import { useAuth } from "../../context/AuthContext";
 
 export default function SideNav({
   show,
@@ -14,6 +15,11 @@ export default function SideNav({
   fileSelected,
   setFileSelected,
 }) {
+
+
+  const {userData} = useAuth()
+
+
   return (
     <>
       <h4>My files</h4>
@@ -43,10 +49,10 @@ export default function SideNav({
                 setFileSelected({ name: "saim" });
               }}
             >
-                Folder
+                {userData.root?.name}
             </Button>
             <br />
-            <Button
+            {/* <Button
               className=" d-flex justify-content-start"
               // pr={"16vw"}
               w={'100%'}
@@ -56,7 +62,7 @@ export default function SideNav({
             >
                 Folder
             </Button>
-            <br />
+            <br /> */}
           </AccordionPanel>
         </AccordionItem>
       </Accordion>

@@ -24,19 +24,23 @@ export default function Home() {
                   flexible plans to meet diverse needs. Experience peace of mind
                   and convenience with our inclusive platform.
                 </h6>
+                <Link to={'/auth/login'}>
                 <Button
                   colorScheme="red"
                   size={{ base: "sm", sm: "md", md: "lg" }}
                   mt={1}
+                  
                 >
                   Try FileLinker for free
                 </Button>
+                </Link>
+
               </div>
             </div>
           </div>
         </div>
         <br /><br /> <br /> <br />
-        <div className="row mt-5">
+        <div className="row mt-4">
           {/*//////////////////---2----//////////////////////  */}
           <div className="col">
             <div className="d-flex justify-content-center align-items-center text-center flex-column">

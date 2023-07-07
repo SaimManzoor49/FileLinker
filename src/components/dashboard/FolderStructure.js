@@ -20,7 +20,6 @@ import {
   AiOutlineFileAdd,
   AiOutlineFolderAdd,
 } from "react-icons/ai";
-import { useUploadFile } from "react-firebase-hooks/storage";
 import {
   ref,
   getDownloadURL,
@@ -38,7 +37,6 @@ export default function FolderStructure({
   handleInsertFile,
   handleDeleteFile,
 }) {
-  const [view, setView] = useState([]);
   const [gotURI, setGotURI] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -132,9 +130,10 @@ export default function FolderStructure({
     // Create a temporary textarea element
     const textarea = document.createElement("textarea");
     textarea.value =
-      "http://localhost:3000/file/" +
+      "https://filelinkerltd.web.app/file/" +
       copyURI.split("/")[copyURI.split("/").length - 1];
 
+      console.log(textarea.value)
     // Append the textarea to the document
     document.body.appendChild(textarea);
 
@@ -296,7 +295,7 @@ export default function FolderStructure({
                   {data.type === "folder" && (
                     <div className="">
                      {
-                      data.name!=='root'&&
+                      data.name!=='Root'&&
 
                        <Button
                        as={"span"}

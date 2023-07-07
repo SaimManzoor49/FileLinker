@@ -5,6 +5,7 @@ import {
   InputGroup,
   InputRightElement,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -16,7 +17,7 @@ import { useAuth } from "../../context/AuthContext";
 
 export default function Login() {
   const [show, setShow] = useState(false);
-  const [state, setstate] = useState({});
+  const [state, setstate] = useState({email:'',password:''});
 
   const [signInWithEmailAndPassword, user, loading, error] =
     useSignInWithEmailAndPassword(auth);
@@ -27,6 +28,8 @@ export default function Login() {
 
   const navigator = useNavigate();
 
+  const toast = useToast()
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setstate((s) => ({ ...s, [name]: value }));
@@ -35,6 +38,24 @@ export default function Login() {
   const handleLogin = async () => {
     // const auth = getAuth()
     const { email, password } = state;
+
+
+    if(
+      email.length<3&&
+      password.length<3
+    ){
+      toast({
+        title: `Enter fields correctly`,
+        status: 'warning',
+        duration: 6000,
+        isClosable: true,
+      })
+      return
+
+    }
+
+
+
     await signInWithEmailAndPassword(email, password);
     console.log(user);
     if (user) {

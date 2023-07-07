@@ -9,16 +9,8 @@ import {
 } from "@chakra-ui/react";
 import { useAuth } from "../../context/AuthContext";
 
-export default function SideNav({
-  show,
-  setShow,
-  fileSelected,
-  setFileSelected,
-}) {
-
-
-  const {userData} = useAuth()
-
+export default function SideNav({ setFileSelected }) {
+  const { userData } = useAuth();
 
   return (
     <>
@@ -26,7 +18,6 @@ export default function SideNav({
 
       <div className="d-flex justify-content-between align-items-center mb-1">
         <h6>FILE MANAGER</h6>
-        {/* <Box display={{base:'none',sm:'block'}}><Button onClick={()=>{setShow(!show)}}><AiOutlineMenuUnfold  /></Button></Box> */}
       </div>
 
       <Accordion defaultIndex={[0]} allowMultiple>
@@ -43,26 +34,14 @@ export default function SideNav({
             {/* folder structure */}
             <Button
               className=" d-flex justify-content-start"
-              // pr={"16vw"}
-              w={'100%'}
+              w={"100%"}
               onClick={() => {
                 setFileSelected({ name: "saim" });
               }}
             >
-                {userData.root?.name}
+              {userData.root?.name}
             </Button>
             <br />
-            {/* <Button
-              className=" d-flex justify-content-start"
-              // pr={"16vw"}
-              w={'100%'}
-              onClick={() => {
-                setFileSelected({ name: "saim" });
-              }}
-            >
-                Folder
-            </Button>
-            <br /> */}
           </AccordionPanel>
         </AccordionItem>
       </Accordion>

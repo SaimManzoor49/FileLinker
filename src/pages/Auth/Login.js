@@ -10,14 +10,13 @@ import {
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import safeImage from "../../assets/images/Screenshot_1.png";
-// import { getAuth,signInWithEmailAndPassword } from "firebase/auth";
 import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { auth } from "../../config/firebase";
 import { useAuth } from "../../context/AuthContext";
 
 export default function Login() {
   const [show, setShow] = useState(false);
-  const [state, setstate] = useState({email:'',password:''});
+  const [state, setstate] = useState({ email: "", password: "" });
 
   const [signInWithEmailAndPassword, user, loading, error] =
     useSignInWithEmailAndPassword(auth);
@@ -28,7 +27,7 @@ export default function Login() {
 
   const navigator = useNavigate();
 
-  const toast = useToast()
+  const toast = useToast();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -36,28 +35,19 @@ export default function Login() {
   };
 
   const handleLogin = async () => {
-    // const auth = getAuth()
     const { email, password } = state;
 
-
-    if(
-      email.length<3&&
-      password.length<3
-    ){
+    if (email.length < 3 && password.length < 3) {
       toast({
         title: `Enter fields correctly`,
-        status: 'warning',
+        status: "warning",
         duration: 6000,
         isClosable: true,
-      })
-      return
-
+      });
+      return;
     }
 
-
-
     await signInWithEmailAndPassword(email, password);
-    console.log(user);
     if (user) {
       localStorage.setItem("isAuth", "true");
       setUser(user);

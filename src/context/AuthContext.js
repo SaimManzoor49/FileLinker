@@ -14,10 +14,7 @@ export default function AuthContextProvider({ children }) {
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        // User is signed in, see docs for a list of available properties
-        // https://firebase.google.com/docs/reference/js/auth.user
-        // const uid = user.uid;
-        // ...
+        
         setUser(user);
         localStorage.setItem("isAuth", "true");
 
@@ -26,7 +23,6 @@ export default function AuthContextProvider({ children }) {
       const docSnap = await getDoc(docRef);
       
       if (docSnap.exists()) {
-        console.log("Document data:", docSnap.data());
         setUserData(docSnap.data())
       } else {
         // docSnap.data() will be undefined in this case

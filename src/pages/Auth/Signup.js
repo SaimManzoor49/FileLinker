@@ -21,19 +21,17 @@ import { useAuth } from "../../context/AuthContext";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import dayjs from "dayjs";
 import { v4 } from "uuid";
-import { useToast } from '@chakra-ui/react'
+import { useToast } from "@chakra-ui/react";
 import axios from "axios";
 
-
 const initialState = {
-  firstName:'',
-  lastName:'',
-  email:'',
-  password:'',
-  confirmPassword:'',
-  pic:''
-}
-
+  firstName: "",
+  lastName: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
+  pic: "",
+};
 
 export default function Signup() {
   const [show, setShow] = useState(false);
@@ -42,7 +40,6 @@ export default function Signup() {
   const [pic, setPic] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-
   const [createUserWithEmailAndPassword, user, loading, error] =
     useCreateUserWithEmailAndPassword(auth);
 
@@ -50,7 +47,7 @@ export default function Signup() {
 
   const navigator = useNavigate();
 
-  const toast = useToast()
+  const toast = useToast();
 
   const handleClick = () => setShow(!show);
 
@@ -62,49 +59,43 @@ export default function Signup() {
   const handleSignup = async () => {
     // const auth = getAuth()
 
-    
-    const {firstName, email, password,confirmPassword } = state;
-    if(
-      firstName.length<3&&
-      email.length<3&&
-      password.length<3&&
-      confirmPassword.length<3
-    ){
+    const { firstName, email, password, confirmPassword } = state;
+    if (
+      firstName.length < 3 &&
+      email.length < 3 &&
+      password.length < 3 &&
+      confirmPassword.length < 3
+    ) {
       toast({
         title: `Enter fields correctly`,
-        status: 'warning',
+        status: "warning",
         duration: 6000,
         isClosable: true,
-      })
-      return
-
+      });
+      return;
     }
 
-
-    
-    if(password!==confirmPassword){
+    if (password !== confirmPassword) {
       toast({
         title: `Password dosen't match`,
-        status: 'warning',
+        status: "warning",
         duration: 6000,
         isClosable: true,
-      })
-      return 
+      });
+      return;
     }
 
-
-    if(!checked){
+    if (!checked) {
       toast({
         title: `Check i agree to terms and condition`,
-        status: 'warning',
+        status: "warning",
         duration: 6000,
         isClosable: true,
-      })
-      return
+      });
+      return;
     }
     await createUserWithEmailAndPassword(email, password);
-    await handleUesrDoc()
-    console.log(user);
+    await handleUesrDoc();
     if (user) {
       localStorage.setItem("isAuth", "true");
       setUser(user);
@@ -112,28 +103,24 @@ export default function Signup() {
     }
   };
 
-
-  const handleUesrDoc = async()=>{
-    await setDoc(doc(db, "users",state.email), {
-      ...state,createdAt: serverTimestamp(),root:{
-        id:v4(),
-        name:'Root',
-        type:'folder',
-        date:dayjs().format("DD-MM-YYYY"),
-        content:[]
-
-      }
+  const handleUesrDoc = async () => {
+    await setDoc(doc(db, "users", state.email), {
+      ...state,
+      createdAt: serverTimestamp(),
+      root: {
+        id: v4(),
+        name: "Root",
+        type: "folder",
+        date: dayjs().format("DD-MM-YYYY"),
+        content: [],
+      },
     });
-
-  }
-
-
-
+  };
 
   const uploadImage = async () => {
-    console.log(pic)
+    setIsLoading(true);
     if (!pic) {
-      console.log('whot')
+      console.log("wot no pic got hehe ");
 
       toast({
         title: "Please select an Image",
@@ -142,10 +129,16 @@ export default function Signup() {
         isClosable: true,
         position: "bottom",
       });
+      setIsLoading(false);
       return;
     }
-
-    if (pic.type === "image/*" || pic.type === "image/png"||pic.type === "image/jpeg") {
+    console.log(pic);
+    if (
+      pic.type === "image/*" ||
+      pic.type === "image/png" ||
+      pic.type === "image/jpeg" ||
+      pic.type.split("/")[0] === "image"
+    ) {
       const data = new FormData();
       data.append("file", pic);
       data.append("upload_preset", "chitChat");
@@ -153,14 +146,17 @@ export default function Signup() {
       await axios
         .post(process.env.REACT_APP_CLOUD_URI, data)
         .then((res) => {
-        console.log(res.data.url)
-        setstate((s) => ({ ...s, pic: res.data.url.toString() }));
-        console.log(state.pic)
+          setstate((s) => ({ ...s, pic: res.data.url.toString() }));
+          setIsLoading(false);
         })
         .catch((err) => {
+          setIsLoading(false);
+
           console.log(err);
         });
     } else {
+      setIsLoading(false);
+
       toast({
         title: "Please select an Image",
         status: "warning",
@@ -171,8 +167,6 @@ export default function Signup() {
       return;
     }
   };
-
-
 
   return (
     <>
@@ -268,33 +262,36 @@ export default function Signup() {
                       </Button>
                     </InputRightElement>
                   </InputGroup>
-                  <FormControl id="pic" colorScheme="gray" mt={'8px'}>
-          <FormLabel>Upload Your Pic!!!</FormLabel>
-          <InputGroup>
-            <Input
-              colorScheme="gray"
-              type="file"
-              accept="image/*"
-              p={1.5}
-              onChange={(e) => {
-                setPic(e.target.files[0]);
-              }}
-            />
-          </InputGroup>
-        </FormControl>
-        <Button
-          colorScheme={state.pic?'green':'gray'}
-          width={"100%"}
-          m={"15px 0 0 0"}
-          onClick={uploadImage}
-          isLoading={isLoading}
-        >
-            {state.pic?'Got Your Image 😮':'Upload Image (Recomanded)'}
-          
-        </Button>
+                  <FormControl id="pic" colorScheme="gray" mt={"8px"}>
+                    <FormLabel>Upload Your Pic!!!</FormLabel>
+                    <InputGroup>
+                      <Input
+                        colorScheme="gray"
+                        type="file"
+                        accept="image/*"
+                        p={1.5}
+                        onChange={(e) => {
+                          setPic(e.target.files[0]);
+                        }}
+                      />
+                    </InputGroup>
+                  </FormControl>
+                  <Button
+                    colorScheme={state.pic ? "green" : "gray"}
+                    width={"100%"}
+                    m={"15px 0 0 0"}
+                    onClick={uploadImage}
+                    isLoading={isLoading}
+                  >
+                    {state.pic
+                      ? "Got Your Image 😮"
+                      : "Upload Image (Recomanded)"}
+                  </Button>
 
                   <Checkbox
-                  onChange={()=>{setChecked(!checked)}}
+                    onChange={() => {
+                      setChecked(!checked);
+                    }}
                     size={{ base: "sm", sm: "md" }}
                     mt={"14px"}
                     colorScheme="red"

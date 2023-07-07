@@ -6,15 +6,23 @@ import {
   AccordionPanel,
   Box,
   Button,
+  Icon,
   Input,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Progress,
   Tooltip,
+  useDisclosure,
 } from "@chakra-ui/react";
 import React, { useRef, useState } from "react";
 import {
   AiFillFile,
   AiFillFolderOpen,
-  AiOutlineCloudDownload,
   AiOutlineDelete,
   AiOutlineDownload,
   AiOutlineFileAdd,
@@ -27,7 +35,6 @@ import {
   deleteObject,
 } from "firebase/storage";
 import { storage } from "../../config/firebase";
-// import {storage} from 'firebase-con'
 import { useToast } from "@chakra-ui/react";
 import { BiShare } from "react-icons/bi";
 
@@ -44,6 +51,7 @@ export default function FolderStructure({
     visible: false,
     type: null,
   });
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const fileInputRef = useRef(null);
 
   // const storageRef = ref(storage);
@@ -105,6 +113,7 @@ export default function FolderStructure({
         },
         (error) => {
           setIsDownloading(false);
+          console.log(error);
         },
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
@@ -133,7 +142,6 @@ export default function FolderStructure({
       "https://file-linker.vercel.app/file/" +
       copyURI.split("/")[copyURI.split("/").length - 1];
 
-      console.log(textarea.value)
     // Append the textarea to the document
     document.body.appendChild(textarea);
 
@@ -195,24 +203,19 @@ export default function FolderStructure({
 
   const handleDelete = (e) => {
     e.stopPropagation();
-    if(data.type==='folder'){
+    if (data.type === "folder") {
       handleDeleteFile(data.id);
-
-    }else{
-
+    } else {
       const desertRef = ref(storage, data.downloadURI);
       handleDeleteFile(data.id);
 
-    deleteObject(desertRef)
-      .then(() => {
-      })
-      .catch((error) => {
-        console.log(error)
-      });
-
-
+      deleteObject(desertRef)
+        .then(() => {})
+        .catch((error) => {
+          console.log(error);
+        });
     }
-    };
+  };
 
   return (
     <>
@@ -250,78 +253,93 @@ export default function FolderStructure({
                       )}
                     </h6>
                   </span>
-                  {/* {f.type !== "folder" && <small>size: {f.size} bytes</small>} */}
-                  {/* <small>{f.type}</small> */}
 
                   <small>
                     {data.type === "file" && (
                       <span className="me-1">
                         <Button
                           as={"span"}
-                          size={"sm"}
+                          size={{ base: "xs", sm: "sm" }}
                           me={"1px"}
                           colorScheme="red"
                           onClick={(e) => {
-                            handleDelete(e);
+                            onOpen();
                           }}
                         >
-                          <AiOutlineDelete fontSize={"20px"} />
+                          <Icon
+                            as={AiOutlineDelete}
+                            fontSize={{ base: "10px", sm: "20px" }}
+                          />
                         </Button>
                         <Button
                           as={"span"}
-                          size={"sm"}
+                          size={{ base: "xs", sm: "sm" }}
                           colorScheme="yellow"
                           onClick={copyURL}
                         >
-                          {!gotURI ? <BiShare fontSize={"20px"} /> : "Got u 😁"}
+                          {!gotURI ? (
+                            <Icon
+                              as={BiShare}
+                              fontSize={{ base: "10px", sm: "20px" }}
+                            />
+                          ) : (
+                            "Got u 😁"
+                          )}
                         </Button>
                         <Button
                           as={"span"}
-                          size={"sm"}
+                          size={{ base: "xs", sm: "sm" }}
                           ms={"1px"}
                           colorScheme="green"
                           onClick={(e) => {
                             handleDownload(e);
                           }}
                         >
-                          <AiOutlineDownload fontSize={"20px"} />
+                          <Icon
+                            as={AiOutlineDownload}
+                            fontSize={{ base: "10px", sm: "20px" }}
+                          />
                         </Button>
                       </span>
                     )}
 
-                    {data.date}
+                    {/* {data.date} */}
                   </small>
 
                   {data.type === "folder" && (
                     <div className="">
-                     {
-                      data.name!=='Root'&&
-
-                       <Button
-                       as={"span"}
-                       size={"sm"}
-                       me={"1px"}
-                       colorScheme="red"
-                       onClick={(e) => {
-                         handleDelete(e);
-                        }}
+                      {data.name !== "Root" && (
+                        <Button
+                          as={"span"}
+                          size={{ base: "xs", sm: "sm" }}
+                          me={"1px"}
+                          colorScheme="red"
+                          onClick={(e) => {
+                            onOpen();
+                          }}
                         >
-                          <AiOutlineDelete fontSize={"20px"} />
+                          <Icon
+                            as={AiOutlineDelete}
+                            fontSize={{ base: "10px", sm: "20px" }}
+                          />
                         </Button>
-                        }
+                      )}
                       <Button
                         as={"span"}
-                        size={"sm"}
+                        size={{ base: "xs", sm: "sm" }}
                         onClick={(e) => {
                           handleDirectory(e, "folder");
                         }}
                       >
-                        <AiOutlineFolderAdd fontSize={"20px"}/>
+                        <Icon
+                          as={AiOutlineFolderAdd}
+                          fontSize={{ base: "10px", sm: "20px" }}
+                        />
                       </Button>
 
                       <Button
                         as={"span"}
-                        size={"sm"}
+                        size={{ base: "xs", sm: "sm" }}
                         ms={"2px"}
                         onClick={(e) => {
                           handleButtonClick(e);
@@ -333,7 +351,10 @@ export default function FolderStructure({
                           ref={fileInputRef}
                           onChange={handleFileChange}
                         />
-                        <AiOutlineFileAdd fontSize={"20px"}/>
+                        <Icon
+                          as={AiOutlineFileAdd}
+                          fontSize={{ base: "10px", sm: "20px" }}
+                        />
                       </Button>
                     </div>
                   )}
@@ -377,6 +398,38 @@ export default function FolderStructure({
           </AccordionPanel>
         </AccordionItem>
       </Accordion>
+
+      {/* //////////////// Modal ////////////////////// */}
+      <>
+        {/* <Button onClick={onOpen}>Open Modal</Button> */}
+
+        <Modal isOpen={isOpen} onClose={onClose} isCentered>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Delete Alert</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              <h6 className="fw-bold">
+                Are you Sure you wanna delete {data.name}
+              </h6>
+            </ModalBody>
+
+            <ModalFooter>
+              <Button variant={"outline"} mr={3} onClick={onClose}>
+                Close
+              </Button>
+              <Button
+                colorScheme="red"
+                onClick={(e) => {
+                  handleDelete(e);
+                }}
+              >
+                Delete
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      </>
     </>
   );
 }

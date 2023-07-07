@@ -1,4 +1,13 @@
-import { Avatar, Button, Card, CardBody, CardFooter, CardHeader, SimpleGrid, Text } from "@chakra-ui/react";
+import {
+  Avatar,
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  SimpleGrid,
+  Text,
+} from "@chakra-ui/react";
 import React from "react";
 import { Link } from "react-router-dom";
 import { BsArrowRightShort } from "react-icons/bs";
@@ -24,22 +33,21 @@ export default function Home() {
                   flexible plans to meet diverse needs. Experience peace of mind
                   and convenience with our inclusive platform.
                 </h6>
-                <Link to={'/auth/login'}>
-                <Button
-                  colorScheme="red"
-                  size={{ base: "sm", sm: "md", md: "lg" }}
-                  mt={1}
-                  
-                >
-                  Try FileLinker for free
-                </Button>
+                <Link to={"/auth/login"}>
+                  <Button
+                    colorScheme="red"
+                    size={{ base: "sm", sm: "md", md: "lg" }}
+                    mt={1}
+                  >
+                    Try FileLinker for free
+                  </Button>
                 </Link>
-
               </div>
             </div>
           </div>
         </div>
-        <br /><br /> <br /> <br />
+        <br />
+        <br /> <br /> <br />
         <div className="row mt-4">
           {/*//////////////////---2----//////////////////////  */}
           <div className="col">
@@ -57,7 +65,8 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <br /><br /> <br /> <br />
+        <br />
+        <br /> <br /> <br />
         <div className="row mt-5 d-flex align-items-center ">
           {/*//////////////////---3----//////////////////////  */}
           <div className="col-12 col-md-6 order-3 order-md-0">
@@ -107,7 +116,8 @@ export default function Home() {
             </video>
           </div>
         </div>
-        <br /><br /> <br /> <br />
+        <br />
+        <br /> <br /> <br />
         <div className="row mt-5 d-flex align-items-center ">
           {/*//////////////////---4----//////////////////////  */}
           <div className="col-12 text-center">
@@ -163,7 +173,8 @@ export default function Home() {
             </video>
           </div>
         </div>
-        <br /><br /> <br /> <br />
+        <br />
+        <br /> <br /> <br />
         <div className="row mt-5 d-flex align-items-center ">
           {/*//////////////////---5----//////////////////////  */}
           <div className="col-12 col-md-6 order-3 order-md-0">
@@ -204,100 +215,125 @@ export default function Home() {
             </video>
           </div>
         </div>
-
-        <br /><br /> <br /> <br />
-
-<div className="row">
-  {/* ///////////////////////////---6----////////////////// */}
-  <div className="col">
-  <SimpleGrid spacing={4} templateColumns={{base:'repeat(auto-fill, minmax( 230px, 1fr))',sm:`repeat(auto-fill, minmax( 400px, 1fr))`}}>
-  <Card>
-    <CardHeader>
-      
-    <Avatar name="M" src="https://mega.io/wp-content/themes/megapages/megalib/images/megaicon.svg" size={'md'}  />
-    <h4 className="mt-2 fw-bold">Mega</h4>
-    </CardHeader>
-    <CardBody>
-      <h1>$5.00</h1>
-      <small>per TB per month</small>
-      <div className="text-center bg-light mt-3 p-2">
-        <h4> End-to-end encryption</h4>
+        <br />
+        <br /> <br /> <br />
+        <div className="row">
+          {/* ///////////////////////////---6----////////////////// */}
+          <div className="col">
+            <SimpleGrid
+              spacing={4}
+              templateColumns={{
+                base: "repeat(auto-fill, minmax( 230px, 1fr))",
+                sm: `repeat(auto-fill, minmax( 400px, 1fr))`,
+              }}
+            >
+              <Card>
+                <CardHeader>
+                  <Avatar
+                    name="M"
+                    src="https://mega.io/wp-content/themes/megapages/megalib/images/megaicon.svg"
+                    size={"md"}
+                  />
+                  <h4 className="mt-2 fw-bold">Mega</h4>
+                </CardHeader>
+                <CardBody>
+                  <h1>$5.00</h1>
+                  <small>per TB per month</small>
+                  <div className="text-center bg-light mt-3 p-2">
+                    <h4> End-to-end encryption</h4>
+                  </div>
+                </CardBody>
+                <CardFooter>
+                  <small>* Price based on Pro III annual payment</small>
+                </CardFooter>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <Avatar
+                    name="M"
+                    src="https://mega.io/wp-content/themes/megapages/megalib/images/dropbox-icon.svg"
+                    size={"md"}
+                  />
+                  <h4 className="mt-2 fw-bold">Dropbox</h4>
+                </CardHeader>
+                <CardBody>
+                  <h1>$6.00</h1>
+                  <small>per TB per month</small>
+                  <div className="text-center bg-light mt-3 p-2">
+                    <h4> End-to-end encryption</h4>
+                  </div>
+                </CardBody>
+                <CardFooter>
+                  <small>* Price based on the Professional annual plan</small>
+                </CardFooter>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <Avatar
+                    name="M"
+                    src="https://mega.io/wp-content/themes/megapages/megalib/images/googledrive-icon.svg"
+                    size={"md"}
+                  />
+                  <h4 className="mt-2 fw-bold">Google Drive</h4>
+                </CardHeader>
+                <CardBody>
+                  <h1>$7.00</h1>
+                  <small>per TB per month</small>
+                  <div className="text-center bg-light mt-3 p-2">
+                    <h4> End-to-end encryption </h4>
+                  </div>
+                </CardBody>
+                <CardFooter>
+                  <small>* Price based on 30 TB annual payment.</small>
+                </CardFooter>
+              </Card>
+            </SimpleGrid>
+          </div>
+        </div>
       </div>
-    </CardBody>
-    <CardFooter>
-      <small>* Price based on Pro III annual payment</small>
-    </CardFooter>
-  </Card>
-  <Card>
-    <CardHeader>
-     
-    <Avatar name="M" src="https://mega.io/wp-content/themes/megapages/megalib/images/dropbox-icon.svg" size={'md'}  />
-    <h4 className="mt-2 fw-bold">Dropbox</h4>
-    </CardHeader>
-    <CardBody>
-      <h1>$6.00</h1>
-      <small>per TB per month</small>
-      <div className="text-center bg-light mt-3 p-2">
-        <h4> End-to-end encryption</h4>
-      </div>
-    </CardBody>
-    <CardFooter>
-      <small>* Price based on the Professional annual plan</small>
-    </CardFooter>
-  </Card>
-  <Card>
-    <CardHeader>
-      
-    <Avatar name="M" src="https://mega.io/wp-content/themes/megapages/megalib/images/googledrive-icon.svg" size={'md'}  />
-    <h4 className="mt-2 fw-bold">Google Drive</h4>
-    </CardHeader>
-    <CardBody>
-      <h1>$7.00</h1>
-      <small>per TB per month</small>
-      <div className="text-center bg-light mt-3 p-2" >
-        <h4> End-to-end encryption </h4>
-      </div>
-    </CardBody>
-    <CardFooter>
-      <small>* Price based on 30 TB annual payment.</small>
-    </CardFooter>
-  </Card>
-</SimpleGrid>
-  </div>
-</div>
-      </div>
-
-
-      <br /><br /> <br /> <br />
-
-
-
+      <br />
+      <br /> <br /> <br />
       <div className="container-fluid ">
-      <div className="row mt-5 d-flex align-items-center  bg-secondary p-4 " >
+        <div className="row mt-5 d-flex align-items-center  bg-secondary p-4 ">
           {/*//////////////////---3----//////////////////////  */}
           <div className="col-12 col-md-6 order-3 order-md-0">
             <div className="">
               <Text
                 className="text-white "
-                fontWeight={'extrabold'}
+                fontWeight={"extrabold"}
                 fontSize={{ base: "32px", sm: "42px", md: "56px" }}
               >
-               Grow your business with FileLinker
+                Grow your business with FileLinker
               </Text>
-            
             </div>
           </div>
           <div className="col-12 col-md-6 col order-3 order-md-0  ">
-           <h6 className="text-white">
-           Bring your team together online with MEGA for Business. From freelancers to startups and all the way to enterprises, MEGA is the perfect online tool to help you grow your business and your team. Store and protect important documents and transform how your teams collaborate with MEGA.
-           </h6>
-           <Button mt={3} colorScheme="whiteAlpha" color={'gray'} bg={'white'} _hover={{bg:'gray.200'}}  rightIcon={<BsArrowRightShort  fontSize={'30px'}/>} >Learn more </Button>
+            <h6 className="text-white">
+              Bring your team together online with MEGA for Business. From
+              freelancers to startups and all the way to enterprises, MEGA is
+              the perfect online tool to help you grow your business and your
+              team. Store and protect important documents and transform how your
+              teams collaborate with MEGA.
+            </h6>
+            <Button
+              mt={3}
+              colorScheme="whiteAlpha"
+              color={"gray"}
+              bg={"white"}
+              _hover={{ bg: "gray.200" }}
+              rightIcon={<BsArrowRightShort fontSize={"30px"} />}
+            >
+              Learn more{" "}
+            </Button>
           </div>
         </div>
-
       </div>
-
-      <br /><br /><br /><br /><br /><br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
     </>
   );
 }

@@ -17,7 +17,7 @@ import {
 import FolderStructure from "./FolderStructure";
 import { signOut } from "firebase/auth";
 import { auth, db } from "../../config/firebase";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import { v4 } from "uuid";
 import { doc, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
@@ -163,7 +163,8 @@ await setDoc(washingtonRef,{...userData, updatedAt: serverTimestamp(),root:data}
               placeholder="Search"
             />
           </InputGroup>
-          <div className="">
+          <div className="d-flex justify-content-center align-items-center gap-2 pe-1">
+            <Link to={'/'}> <Button variant={'outline'} colorScheme="red" size={'sm'}>Home</Button> </Link>
             <div className="dropdown">
               <Avatar
                 size={"sm"}

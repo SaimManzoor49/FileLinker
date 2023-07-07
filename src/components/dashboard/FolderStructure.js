@@ -130,7 +130,7 @@ export default function FolderStructure({
     // Create a temporary textarea element
     const textarea = document.createElement("textarea");
     textarea.value =
-      "https://filelinkerltd.web.app/file/" +
+      "https://file-linkers-7hubk71at-saimmanzoor49.vercel.app/file/" +
       copyURI.split("/")[copyURI.split("/").length - 1];
 
       console.log(textarea.value)

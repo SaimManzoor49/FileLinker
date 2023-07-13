@@ -205,14 +205,19 @@ export default function FolderStructure({
     e.stopPropagation();
     if (data.type === "folder") {
       handleDeleteFile(data.id);
+      onClose()
     } else {
       const desertRef = ref(storage, data.downloadURI);
       handleDeleteFile(data.id);
-
+      
       deleteObject(desertRef)
-        .then(() => {})
-        .catch((error) => {
-          console.log(error);
+      .then(() => {
+        onClose()
+
+      })
+      .catch((error) => {
+        console.log(error);
+        onClose()
         });
     }
   };
